@@ -184,12 +184,14 @@ return require('packer').startup(function(use)
       end
     }
 
+    --[[
     use {
       "OmniSharp/omnisharp-vim",
       config = function()
         vim.g.OmniSharp_server_path = "~/.local/share/nvim/site/pack/packer/start/omnisharp-vim"
       end
     }
+    --]]
 
   use("folke/zen-mode.nvim")
   use("github/copilot.vim")

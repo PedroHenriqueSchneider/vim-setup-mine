@@ -2,18 +2,20 @@ local lsp = require("lsp-zero")
 
 lsp.preset("recommended")
 
+-- Instala servidores LSP automaticamente
 lsp.ensure_installed({
   'tsserver',
   'rust_analyzer',
-  'phpactor'
+  'phpactor',
+  'omnisharp'  -- Adicione o OmniSharp aqui
 })
 
 -- Fix Undefined global 'vim'
 lsp.nvim_workspace()
 
-
+-- Configuração do nvim-cmp
 local cmp = require('cmp')
-local cmp_select = {behavior = cmp.SelectBehavior.Select}
+local cmp_select = { behavior = cmp.SelectBehavior.Select }
 local cmp_mappings = lsp.defaults.cmp_mappings({
   ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
   ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
@@ -28,18 +30,20 @@ lsp.setup_nvim_cmp({
   mapping = cmp_mappings
 })
 
+-- Preferências do LSP
 lsp.set_preferences({
-    suggest_lsp_servers = false,
-    sign_icons = {
-        error = 'E',
-        warn = 'W',
-        hint = 'H',
-        info = 'I'
-    }
+  suggest_lsp_servers = false,
+  sign_icons = {
+    error = 'E',
+    warn = 'W',
+    hint = 'H',
+    info = 'I'
+  }
 })
 
+-- Mapeamentos de teclas ao anexar um LSP
 lsp.on_attach(function(client, bufnr)
-  local opts = {buffer = bufnr, remap = false}
+  local opts = { buffer = bufnr, remap = false }
 
   vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
   vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
@@ -53,9 +57,20 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
 end)
 
-lsp.setup()
-
-vim.diagnostic.config({
-    virtual_text = true
+-- Configuração específica do OmniSharp
+lsp.configure('omnisharp', {
+  cmd = { "omnisharp", "--languageserver", "--hostPID", tostring(vim.fn.getpid()) },
+  on_attach = function(client, bufnr)
+    -- Mapeamentos específicos para OmniSharp
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", { noremap = true, silent = true })
+  end
 })
 
+-- Inicializa o LSP
+lsp.setup()
+
+-- Configuração de diagnósticos
+vim.diagnostic.config({
+  virtual_text = true
+})
