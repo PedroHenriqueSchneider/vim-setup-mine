@@ -14,12 +14,16 @@ return require('packer').startup(function(use)
 
 
   use({
-	  'rose-pine/neovim',
-	  as = 'rose-pine',
-	  config = function()
-		  vim.cmd('colorscheme rose-pine')
-	  end
-  })
+      'rose-pine/neovim',
+      as = 'rose-pine',
+      config = function()
+          require('rose-pine').setup({
+              dark_variant = 'main',
+              disable_italics = true, -- Ajuste conforme necessário
+          })
+          vim.cmd('colorscheme rose-pine')
+      end
+    })
 
   use({
       "folke/trouble.nvim",
