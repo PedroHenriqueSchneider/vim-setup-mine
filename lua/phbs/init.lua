@@ -54,3 +54,8 @@ vim.api.nvim_exec([[
   augroup END
 ]], false)
 
+-- Habilita indentação e plugins por tipo de arquivo
+vim.cmd('filetype indent plugin on')
+
+-- Habilita a sintaxe
+vim.cmd('syntax enable')
